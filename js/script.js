@@ -1,28 +1,36 @@
 "use strict";
 
-(function() {
+(function () {
 	const url = "http://api.openweathermap.org/data/2.5/weather?q=";
-	const apiKey = "APIKEY"; // Replace "APIKEY" with your own API key; otherwise, your HTTP request will not work
+	const apiKey = "798e822946ee9f2bc7311d1b28ccbb8c"; // Replace "APIKEY" with your own API key; otherwise, your HTTP request will not work
 	const activities = {
-		teamIn: ['basketball','hockey','volleyball'],
-		teamOutWarm: ['softball/baseball','football/soccer','American football','rowing','tennis','volleyball','ultimate frisbee','rugby'],
+		teamIn: ['basketball', 'hockey', 'volleyball'],
+		teamOutWarm: ['softball/baseball', 'football/soccer', 'American football', 'rowing', 'tennis', 'volleyball', 'ultimate frisbee', 'rugby'],
 		teamOutCold: ['hockey'],
-		soloIn: ['rock climbing','swimming','ice skating'],
-		soloOutWarm: ['rowing','running','hiking','cycling','rock climbing'],
-		soloOutCold: ['snowshoeing','downhill skiing','cross-country skiing','ice skating']
+		soloIn: ['rock climbing', 'swimming', 'ice skating'],
+		soloOutWarm: ['rowing', 'running', 'hiking', 'cycling', 'rock climbing'],
+		soloOutCold: ['snowshoeing', 'downhill skiing', 'cross-country skiing', 'ice skating']
 	}
 	let state = {};
 	let category = 'all';
 
 	// get weather data when user clicks Forecast button, then add temp & conditions to view
-	$('.forecast-button').click(function(e) {
+	$('.forecast-button').click(function (e) {
 		e.preventDefault();
 		const location = $('#location').val();
 		$('#location').val('');
-
+		/*
 		$.get(url + location + '&appid=' + apiKey).done(function(response) {
 			updateUISuccess(response);
 		}).fail(function() {
+			updateUIFailure();
+		});
+		*/
+		fetch(url + location + '&appid=' + apiKey).then(function (response) {
+			return response.json();
+		}).then(function (response) {
+			updateUISuccess(response);
+		}).catch(function () {
 			updateUIFailure();
 		});
 	});
@@ -75,7 +83,7 @@
 			category = $(this).attr('id');
 			$('.options div').removeClass('selected');
 			$(this).addClass('selected');
-		} 
+		}
 
 		state.activities = [];
 		if (state.condition === "Rain") {
@@ -102,7 +110,7 @@
 		ReactDOM.render(<Activities {...state} />, $into);
 
 		function Activities(props) {
-			const activitiesList = props.activities.map(function(activity, index) {
+			const activitiesList = props.activities.map(function (activity, index) {
 				return <li key={index}>{activity}</li>
 			});
 			return (
